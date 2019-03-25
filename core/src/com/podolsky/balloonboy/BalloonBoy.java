@@ -64,9 +64,7 @@ public class BalloonBoy extends ApplicationAdapter {
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        if(!death) {
-            batch.draw(balloonImage, balloon.x, balloon.y);
-        }
+        batch.draw(balloonImage, balloon.x, balloon.y);
         for(Rectangle arrow : arrows) {
             batch.draw(arrowImage, arrow.x, arrow.y);
         }
@@ -94,15 +92,18 @@ public class BalloonBoy extends ApplicationAdapter {
         for(Iterator<Rectangle> iter = arrows.iterator(); iter.hasNext();) {
             Rectangle arrow = iter.next();
             arrow.x -= 100 * Gdx.graphics.getDeltaTime();
-            if(arrow.x < -367) {
+            if(arrow.x < 0-arrow.width) {
                 iter.remove();
             }
             if(arrow.overlaps(balloon)) {
                 death = true;
+                arrows.clear();
+                balloon.x = 800/2 - 64/2;
+                balloon.y = 20;
             }
         }
 
-        if(TimeUtils.nanoTime() - lastArrowTime > 3000000000L) {
+        if(TimeUtils.nanoTime() - lastArrowTime > 1000000000L) {
             spawnArrow();
         }
 	}
@@ -113,10 +114,10 @@ public class BalloonBoy extends ApplicationAdapter {
 
     private void spawnArrow() {
 	    Rectangle arrow = new Rectangle();
+        arrow.height = 16;
+        arrow.width = 138;
         arrow.x = 800;
-        arrow.y = MathUtils.random(41, 480-41);
-        arrow.height = 41;
-        arrow.width = 367;
+        arrow.y = MathUtils.random(arrow.height, 480-arrow.height);
         arrows.add(arrow);
         lastArrowTime = TimeUtils.nanoTime();
     }
